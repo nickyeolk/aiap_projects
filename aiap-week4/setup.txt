@@ -1,0 +1,12 @@
+Working on the assignment in a virtual environment is highly encouraged. Please see below for executing a virtual environment.
+
+cd aiap_batch2.0_week4_intronn
+sudo pip install virtualenv # If you didn't install it
+virtualenv /your/path/to/the/virtual/env
+source  /your/path/to/the/virtual/env/bin/activate
+pip install -r requirements.txt  # Install dependencies
+# Note that this does NOT install TensorFlow,
+# which you need to do yourself.
+# Work on the assignment
+deactivate # Exit the virtual environment
+Please clone or download as .zip file of this repository.
