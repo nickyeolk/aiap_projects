@@ -30,4 +30,18 @@ def dl_and_unzip(url):
     untar('./data/'+filename)
     print('extracted!')
 
+def unpickle(filepath):
+    import pickle
+    with open(filepath, 'rb') as fo:
+        dictionary = pickle.load(fo, encoding='bytes')
+    return dictionary
 
+def just_dataframes(filepath):
+    '''This function can be used to quickly load the
+    data of a single training set as a dataframe. 
+    '''
+    import pandas as pd
+    dictionary = unpickle(filepath)
+    df = pd.DataFrame(dictionary[b'data'])
+    df['target'] = dictionary[b'labels']
+    return df
