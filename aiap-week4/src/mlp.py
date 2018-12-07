@@ -14,10 +14,13 @@ class MLPTwoLayers:
         self.output_size = output_size
         # print('nihao', self.input_size, self.hidden_size, self.output_size)
         # initialize weights
-        self.w1 = np.random.randn(self.input_size, self.hidden_size)
-        self.w2 = np.random.randn(self.hidden_size, self.output_size)
+        epsilon_init=0.12
+        self.w1 = np.random.randn(self.input_size, self.hidden_size)#*2*epsilon_init-epsilon_init
+        self.w2 = np.random.randn(self.hidden_size, self.output_size)#*2*epsilon_init-epsilon_init
         self.b1 = np.ones(self.hidden_size)
         self.b2 = np.ones(self.output_size)
+        self.loss_collect = []
+        self.correct = []
 
     def __sigmoid(self, x):
         # exps = np.exp(x - np.max(x))
@@ -48,17 +51,21 @@ class MLPTwoLayers:
         self.y = y
         # print(self.y)
         # self.y_pred[self.y] = self.y_pred[self.y]-1
+        self.loss_collect.append(-np.log(self.y_pred[self.y]))
+        self.correct.append(self.y_pred[self.y])
         return -np.log(self.y_pred[self.y])
 
     def backward(self, loss):
-        self.lr = 1e-3
-        self.lossx = self.y_pred-self.y
+        self.lr = 0.01 #1e-3
+        self.y_hot = np.zeros(10)
+        self.y_hot[self.y] = 1
+        self.lossx = self.y_pred-self.y_hot
         self.t1_2 = self.lossx
         # self.t2_2 = self.__sigmoid_prime(self.x2)
         self.t3_2 = self.x1a
         # print(np.shape(self.t1_2),np.shape(self.t2_2), np.shape(self.t3_2),np.shape(self.w2))
         self.big_delt2 = np.dot(self.t3_2.reshape(-1,1),self.t1_2.reshape(1,-1))# *self.t2_2.reshape(1,-1)) 
-        self.t1_1 = np.dot(self.w2,self.t1_2*self.__sigmoid_prime(self.x2))
+        self.t1_1 = np.dot(self.w2,self.t1_2) # dont need *self.__sigmoid_prime(self.x2)
         self.t2_1 = self.__sigmoid_prime(self.x1)
         self.t3_1 = self.X
         self.big_delt1 = np.dot(self.t3_1.reshape(-1, 1),self.t1_1*self.t2_1.reshape(1, -1))
