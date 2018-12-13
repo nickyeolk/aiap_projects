@@ -30,11 +30,33 @@ def dl_and_unzip(url):
     untar('./data/'+filename)
     print('extracted!')
 
-def unpickle(filepath):
-    import pickle
-    with open(filepath, 'rb') as fo:
-        dictionary = pickle.load(fo, encoding='bytes')
-    return dictionary
+def read_to_df(dirname):
+    scores = []
+    text = []
+    for filename in os.listdir(dirname):
+        scores.append(re.search('\_(.*?)\.',filename).group(1))
+        file = open(dirname+filename,'r',encoding='utf-8')
+        try:
+            text.append(file.read())
+        except:
+            print(filename)
+    scores = [int(i) for i in scores]
+    return pd.DataFrame({'text':text, 'scores':scores})
+
+def save_as_pkl():
+	df_pos = read_files('C:/Users/likkhian/Desktop/aclImdb/train/pos/')
+	df_pos['positive'] = 1
+	df_neg = read_files('C:/Users/likkhian/Desktop/aclImdb/train/neg/')
+	df_neg['positive'] = 0
+	df_raw = pd.concat([df_pos,df_neg])
+
+	df_pos_test = read_files('C:/Users/likkhian/Desktop/aclImdb/test/pos/')
+	df_pos_test['positive'] = 1
+	df_neg_test = read_files('C:/Users/likkhian/Desktop/aclImdb/test/neg/')
+	df_neg_test['positive'] = 0
+	df_raw_test = pd.concat([df_pos_test,df_neg_test])
+	df_raw.to_pickle('./data/df_raw.pkl')
+	df_raw_test.to_pickle('./data/df_raw_test.pkl')
 
 def just_dataframes(filepath):
     '''This function can be used to quickly load the
